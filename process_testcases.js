@@ -19,7 +19,8 @@ function process_testCases(input) {
         result += `${temp.join(' ')}\n`; 
       } 
       else {
-        result += `${line}\n`;  
+        const temp = JSON.parse(line);
+        result += `${temp}\n`;  
       }
     });
     return result;  

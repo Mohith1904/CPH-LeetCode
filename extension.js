@@ -34,18 +34,37 @@ async function activate(context) {
 		const question_url = await vscode.window.showInputBox({
 			prompt: 'Provide Question URL'
 		});
-		const question_name = question_url.split('/')[4];
-		let example_testCases = await getQuestionData(question_name, 'exampleTestcases');
-		example_testCases = await process_testCases(example_testCases);
-		console.log(example_testCases);
 		const editor = vscode.window.activeTextEditor;
-		const filePath = vscode.window.activeTextEditor.document.uri.fsPath;
-		run_file(filePath, 'python');	
+		if (!editor) {
+            vscode.window.showErrorMessage("No active text editor found.");
+            return;
+        }
+		const url_segments = question_url.split('/');
+		if (url_segments.length < 5 || !url_segments[4]) {
+			vscode.window.showErrorMessage("Invalid URL format. Please provide a valid question URL.");
+			return;
+		}
+		const question_name = url_segments[4];
+		const filePath = editor.document.fileName;
+		const language = editor.document.languageId;
+		const dir_path = path.dirname(filePath);
+		let example_testCases = await getQuestionData(question_name, 'exampleTestcases', vscode);
+		if(example_testCases == null) return;
+		example_testCases = await process_testCases(example_testCases);
+		try {
+            fs.writeFileSync(path.join(dir_path, 'cph_input.txt'), example_testCases, 'utf8');
+        } catch (err) {
+            vscode.window.showErrorMessage(`Error writing to input.txt: ${err.message}`);
+        }
+		console.log(example_testCases);
+		
+		await run_file(filePath, language);
 
 	});
 
-	context.subscriptions.push(disposable);
-	context.subscriptions.push(run_testCases);
+	await context.subscriptions.push(run_testCases);
+	await context.subscriptions.push(disposable);
+	
 }
 
 // This method is called when your extension is deactivated

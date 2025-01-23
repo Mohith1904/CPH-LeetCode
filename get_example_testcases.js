@@ -1,4 +1,4 @@
- async function getQuestionData(titleSlug, dataType) {
+ async function getQuestionData(titleSlug, dataType, vscode) {
   const url = "https://leetcode.com/graphql";
   const query = `
     query questionContent($titleSlug: String!) {
@@ -23,9 +23,8 @@
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(
-        `Error: ${data.errors ? data.errors[0].message : "Unknown error"}`
-      );
+      vscode.window.showErrorMessage("Error fetching question content:", data.errors ? data.errors[0].message:"Check Internet Connection");
+      return null;
     }
 
     const result = data.data.question[dataType];
@@ -35,7 +34,8 @@
 
     return result;
   } catch (error) {
-    console.error("Error fetching question content:", error.message);
+    vscode.window.showErrorMessage("Error fetching question content:", "Provide valid URL");
+    return null;
   }
 };
 
