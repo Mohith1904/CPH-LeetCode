@@ -76,7 +76,7 @@ function getWebviewContent() {
         const problemUrlInput = document.getElementById('problemUrl');
         const testcaseContainer = document.getElementById('testcaseContainer');
 
-        // Add Testcase Button Logic
+        
         addTestcaseButton.addEventListener('click', () => {
             const testcaseDiv = document.createElement('div');
             testcaseDiv.className = 'testcase';
@@ -92,13 +92,11 @@ function getWebviewContent() {
                 <button class="button deleteButton">Delete Testcase</button>
             \`;
 
-            // Delete Button Logic
             const deleteButton = testcaseDiv.querySelector('.deleteButton');
             deleteButton.addEventListener('click', () => {
                 testcaseContainer.removeChild(testcaseDiv);
             });
 
-            // Run Testcase Button Logic
             const runTestcaseButton = testcaseDiv.querySelector('.runTestcaseButton');
             runTestcaseButton.addEventListener('click', () => {
                 const inputField = testcaseDiv.querySelector('.input_case');
@@ -114,13 +112,13 @@ function getWebviewContent() {
                     input: input,
                 });
 
-                runTestcaseButton.disabled = true; // Disable the button while processing
+                runTestcaseButton.disabled = true;  
             });
 
             testcaseContainer.appendChild(testcaseDiv);
         });
 
-        // Fetch Testcase Button Logic
+       
         fetchTestcaseButton.addEventListener('click', () => {
             const problemUrl = problemUrlInput.value.trim();
             if (!problemUrl) {
@@ -133,14 +131,13 @@ function getWebviewContent() {
             });
         });
 
-        // Listen for messages from the extension
+       
         window.addEventListener('message', (event) => {
             const message = event.data;
 
             if (message.command === 'displayTestcases') {
-                testcaseContainer.innerHTML = ''; // Clear existing test cases
+                testcaseContainer.innerHTML = ''; 
 
-                // Add fetched test cases
                 message.testcases.forEach((testcase) => {
                     const testcaseDiv = document.createElement('div');
                     testcaseDiv.className = 'testcase';
@@ -162,13 +159,12 @@ function getWebviewContent() {
                             input: testcase.input,
                         });
 
-                        runTestcaseButton.disabled = true; // Disable the button while processing
+                        runTestcaseButton.disabled = true;
                     });
 
                     testcaseContainer.appendChild(testcaseDiv);
                 });
             } else if (message.command === 'displayOutput') {
-                // Match test case by input and update actual output
                 const testcases = testcaseContainer.querySelectorAll('.testcase');
                 testcases.forEach((testcaseDiv) => {
                     const inputField = testcaseDiv.querySelector('.input_case');
@@ -177,7 +173,7 @@ function getWebviewContent() {
                     if (inputField.value.trim() === message.input.trim()) {
                         actualOutputField.value = message.output;
                         const runTestcaseButton = testcaseDiv.querySelector('.runTestcaseButton');
-                        runTestcaseButton.disabled = false; // Re-enable the button
+                        runTestcaseButton.disabled = false; 
                     }
                 });
             }

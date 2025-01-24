@@ -1,5 +1,4 @@
 const vscode = require('vscode');
-const fs = require('fs');
 const { exec } = require('child_process');
 const path = require('path');
 
@@ -26,10 +25,10 @@ async function run_file(filepath, language) {
             exec(run_cmd, (err, stdout, stderr) => {
                 if (err) {
                     vscode.window.showErrorMessage(`Error executing file: ${stderr}`);
-                    reject(stderr);  // Reject the promise with error
+                    reject(stderr);  
                 } else {
                     vscode.window.showInformationMessage(`Execution result: ${stdout}`);
-                    resolve(stdout);  // Resolve the promise with output
+                    resolve(stdout);  
                 }
             });
         });

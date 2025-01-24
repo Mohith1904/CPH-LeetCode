@@ -10,10 +10,9 @@ function process_testCases(content, dir_path, vscode){
   $('pre').each((i, element) => {
     const tc = $(element).text().trim();
     const lines = tc.split("\n").map((line) => line.trim()).filter(Boolean);
-    //converting input and output here into json object
     const input_line = lines.find((line) => line.startsWith("Input:")).replace("Input: ", "").trim();
     const outputLine = lines.find((line) => line.startsWith("Output:")).replace("Output: ", "").trim();
-    console.log(outputLine);
+    // console.log(outputLine);
     output_testCases+=outputLine;
     output_testCases+="\n\n";
     function formatLine(line) {
@@ -24,7 +23,6 @@ function process_testCases(content, dir_path, vscode){
 
     const input_string = `{${formatLine(input_line)}}`;
     const test_input = JSON.parse(input_string);
-    // console.log(test_input);
         
     let result = "";
     
@@ -33,7 +31,6 @@ function process_testCases(content, dir_path, vscode){
       const value = test_input[key];
 
       if (Array.isArray(value) && value.every(Array.isArray)) {
-        // 2D array handling
         const numRows = value.length;
         const numCols = value[0].length;
 
@@ -42,12 +39,10 @@ function process_testCases(content, dir_path, vscode){
           result += `${row.join(" ")}\n`;
         });
       } else if (Array.isArray(value)) {
-        // 1D array handling
         const size = value.length;
         result += `${size}\n`;
         result += `${value.join(" ")}\n`;
       } else {
-        // Single value
         result += `${value}\n`;
       }
     }
@@ -60,7 +55,7 @@ function process_testCases(content, dir_path, vscode){
   } catch (err) {
       vscode.window.showErrorMessage(`Error writing to input.txt: ${err.message}`);
   }
-  console.log(input_testCases);
+  // console.log(input_testCases);
 
 }
 module.exports = process_testCases;

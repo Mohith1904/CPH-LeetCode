@@ -30,7 +30,6 @@
     const result = data.data.question["content"];
 
 
-    // console.log(`content:`, result);
 
     return result;
   } catch (error) {
