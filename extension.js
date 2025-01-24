@@ -49,26 +49,21 @@ async function activate(context) {
 		}
 
 		const filePath = editor.document.fileName;
-		const dirPath = path.dirname(filePath);
-
-		const inputFilePath = path.join(dirPath, 'cph_input.txt');
-		const outputFilePath = path.join(dirPath, 'cph_output.txt');
+		const dir_path = path.dirname(filePath);
+		const language = editor.document.languageId;
+		const inputFilePath = path.join(dir_path, 'cph_input.txt');
+		const outputFilePath = path.join(dir_path, 'cph_output.txt');
         panel.webview.html = getWebviewContent();
 
         // Handle messages from the webview
         panel.webview.onDidReceiveMessage(
 			async (message) => {
 				if (message.command === 'fetchTestcase') {
-					
-		
-					
-		
 					const question_url = message.url.trim();
 					if (!question_url) {
 						vscode.window.showErrorMessage("No question URL provided.");
 						return;
 					}
-		
 					try {
 						// Log or use the question URL as needed
 						console.log("Fetching test cases for URL:", question_url);
@@ -78,9 +73,7 @@ async function activate(context) {
 							return;
 						}
 						const question_name = url_segments[4];
-						const filePath = editor.document.fileName;
-						const language = editor.document.languageId;
-						const dir_path = path.dirname(filePath);
+						
 						let content = await getQuestionData(question_name, 'content', vscode);
 						if(content == null) return;
 						await process_testCases(content, dir_path, vscode);
@@ -108,6 +101,28 @@ async function activate(context) {
 						});
 					} catch (error) {
 						vscode.window.showErrorMessage("Error reading test case files: " + error.message);
+					}
+				}else if(message.command == 'runTestcase'){
+					const input = message.input;
+					console.log(input);
+
+					try {
+						// Assuming you have a function `run_file_with_input` to run the code with given input
+
+						await fs.writeFileSync(path.join(dir_path, 'cph_input.txt'), input, 'utf8');
+						const output = await run_file(filePath,language);
+						console.log(dir_path);
+						console.log("run button is pressed");
+						// Execute the file with the provided input and get the output
+
+						// Send the output back to the webview
+						panel.webview.postMessage({
+							command: 'displayOutput',
+							input: input, // Include input to match it in the webview
+							output: output,
+						});
+					} catch (error) {
+						vscode.window.showErrorMessage("Error running test case: " + error.message);
 					}
 				}
 			},

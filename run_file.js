@@ -1,5 +1,3 @@
-
-
 const vscode = require('vscode');
 const fs = require('fs');
 const { exec } = require('child_process');
@@ -23,16 +21,24 @@ async function run_file(filepath, language) {
         run_cmd = `javac ${filepath} && java ${classname}  < ${input_file}`;
     }
 
-    await exec(run_cmd, (err, stdout, stderr) => {
-        if (err) {
-            vscode.window.showErrorMessage(`Error executing file: ${stderr}`);
-        } else {
-            vscode.window.showInformationMessage(`Execution result: ${stdout}`);
-            fs.writeFileSync(path.join(dir_path, 'cph_output.txt'), stdout, 'utf8');
-        }
-        // fs.unlinkSync(filepath);
-    }); 
-    
+    try {
+        const output = await new Promise((resolve, reject) => {
+            exec(run_cmd, (err, stdout, stderr) => {
+                if (err) {
+                    vscode.window.showErrorMessage(`Error executing file: ${stderr}`);
+                    reject(stderr);  // Reject the promise with error
+                } else {
+                    vscode.window.showInformationMessage(`Execution result: ${stdout}`);
+                    resolve(stdout);  // Resolve the promise with output
+                }
+            });
+        });
+
+        console.log('Output:', output);
+        return output;
+    } catch (error) {
+        console.error('Error:', error);
+    }
 }
 
 module.exports = run_file;
