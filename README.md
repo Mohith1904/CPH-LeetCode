@@ -10,9 +10,32 @@ The main features of this extension include:-
 **Run TestCases:-** You can execute each testcase and display results in real time.  
 **Delete TestCases:-** Easily remove testcases with a using the delete option for only custom testcases.  
 
+## Running the Extension
 
-## How It Works
-Click `Ctrl+Shift+P` to open the command pallete and run the command **GUI LC CPH", from there you access the GUI that will be opened in the side window.   
+### 1. Clone the Repository 
+Run the following command to clone the repository:
+
+bash
+git clone https://github.com/Mohith1904/CPH-LeetCode
+
+### 2. Requirements
+
+1. Install *Node.js* (includes npm) from [Node.js official site](https://nodejs.org/).
+2. Run the following command to install the required dependencies:
+  bash
+    npm install
+  
+  bash
+    npm install node-fetch cheerio
+     
+3. Optional: Install the VS Code Extension Development Kit:
+  bash
+   npm install -g yo generator-code
+    
+### 3. Navigate to extension.js
+   F5 to start debugging
+
+Click `Ctrl+Shift+P` to open the command pallete and run the command **GUI LC CPH", from there you can access the GUI that will be opened in the side window.   
 The GUI will run code of the file that was active while running the command. If you want to run code for another file, please close the GUI and run the command mentioned again with active text editor being the file you want to run.  
 
 
@@ -23,7 +46,7 @@ Reduces context switching by integrating directly with your editor.
 Ideal for competitive programming, algorithm testing, and debugging is faster in local environment.  
 
 
-### 1.0.0
+## 1.0.0
 
 Initial release of CPH-LeetCode  
 
