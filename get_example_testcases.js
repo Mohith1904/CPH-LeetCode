@@ -3,7 +3,7 @@
   const query = `
     query questionContent($titleSlug: String!) {
       question(titleSlug: $titleSlug) {
-        ${dataType}
+       content
       }
     }
   `;
@@ -27,10 +27,10 @@
       return null;
     }
 
-    const result = data.data.question[dataType];
+    const result = data.data.question["content"];
 
 
-    console.log(`${dataType}:`, result);
+    // console.log(`content:`, result);
 
     return result;
   } catch (error) {

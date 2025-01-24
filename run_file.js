@@ -13,9 +13,9 @@ async function run_file(filepath, language) {
     if(language == 'python'){
         run_cmd = `python ${filepath} < ${input_file}`;
     }else if(language == 'cpp'){
-        run_cmd = `g++ ${filepath} -o cph_outfile && cph_outfile.exe  < ${input_file}`;
+        run_cmd = `g++ ${filepath} -o cph_outfile && cph_outfile  < ${input_file}`;
     }else if(language == 'c'){
-        run_cmd = `gcc ${filepath} -o c_outfile && c_outfile.exe  < ${input_file}`;
+        run_cmd = `gcc ${filepath} -o c_outfile && c_outfile  < ${input_file}`;
     }else if(language == 'javascript'){
         run_cmd = `node ${filepath}  < ${input_file}`;
     }else if(language == 'java'){
@@ -36,5 +36,3 @@ async function run_file(filepath, language) {
 }
 
 module.exports = run_file;
-
-// run_file(`S:\projects\leetcode_cph\cph-leetcode\hello.cpp`, 'cpp');

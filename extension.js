@@ -1,3 +1,5 @@
+const getWebviewContent = require('./get_gui.js');
+const extract_input_output = require('./extract_input_output.js');
 const {getQuestionData} = require('./get_example_testcases.js');
 const process_testCases = require('./process_testcases.js');
 const run_file = require('./run_file.js');
@@ -30,6 +32,92 @@ async function activate(context) {
 		vscode.window.showInformationMessage('Hello World from cph_leetcode!');
 	});
 
+	const gui = await vscode.commands.registerCommand('cph-leetcode.showTestcaseGUI', async function () {
+        const panel = vscode.window.createWebviewPanel(
+            'testcaseGUI', // Identifies the type of the webview
+            'Testcase GUI', // Title of the panel
+            vscode.ViewColumn.Beside, // Editor column to show the new webview panel in
+            {
+                enableScripts: true, // Allow JavaScript in the webview
+            }
+        );
+
+		const editor = vscode.window.activeTextEditor;
+		if (!editor) {
+			vscode.window.showErrorMessage("No active text editor found.");
+			return;
+		}
+
+		const filePath = editor.document.fileName;
+		const dirPath = path.dirname(filePath);
+
+		const inputFilePath = path.join(dirPath, 'cph_input.txt');
+		const outputFilePath = path.join(dirPath, 'cph_output.txt');
+        panel.webview.html = getWebviewContent();
+
+        // Handle messages from the webview
+        panel.webview.onDidReceiveMessage(
+			async (message) => {
+				if (message.command === 'fetchTestcase') {
+					
+		
+					
+		
+					const question_url = message.url.trim();
+					if (!question_url) {
+						vscode.window.showErrorMessage("No question URL provided.");
+						return;
+					}
+		
+					try {
+						// Log or use the question URL as needed
+						console.log("Fetching test cases for URL:", question_url);
+						const url_segments = question_url.split('/');
+						if (url_segments.length < 5 || !url_segments[4]) {
+							vscode.window.showErrorMessage("Invalid URL format. Please provide a valid question URL.");
+							return;
+						}
+						const question_name = url_segments[4];
+						const filePath = editor.document.fileName;
+						const language = editor.document.languageId;
+						const dir_path = path.dirname(filePath);
+						let content = await getQuestionData(question_name, 'content', vscode);
+						if(content == null) return;
+						await process_testCases(content, dir_path, vscode);
+
+		
+						// Read input and output files
+						const inputs = fs.readFileSync(inputFilePath, 'utf8').trim().split('\n\n');
+						const outputs = fs.readFileSync(outputFilePath, 'utf8').trim().split('\n\n');
+		
+						if (inputs.length !== outputs.length) {
+							vscode.window.showErrorMessage("Mismatch between number of inputs and outputs in the files.");
+							return;
+						}
+		
+						// Prepare test cases
+						const testcases = inputs.map((input, index) => ({
+							input: input.trim(),
+							output: (outputs[index] || '').trim(),
+						}));
+		
+						// Send test cases back to the webview
+						panel.webview.postMessage({
+							command: 'displayTestcases',
+							testcases: testcases,
+						});
+					} catch (error) {
+						vscode.window.showErrorMessage("Error reading test case files: " + error.message);
+					}
+				}
+			},
+			undefined,
+			context.subscriptions
+		);
+		
+		
+    });
+
 	const run_testCases = await vscode.commands.registerCommand('cph-leetcode.run_testCases', async function(){
 		const question_url = await vscode.window.showInputBox({
 			prompt: 'Provide Question URL'
@@ -48,21 +136,15 @@ async function activate(context) {
 		const filePath = editor.document.fileName;
 		const language = editor.document.languageId;
 		const dir_path = path.dirname(filePath);
-		let example_testCases = await getQuestionData(question_name, 'exampleTestcases', vscode);
-		if(example_testCases == null) return;
-		example_testCases = await process_testCases(example_testCases);
-		try {
-            fs.writeFileSync(path.join(dir_path, 'cph_input.txt'), example_testCases, 'utf8');
-        } catch (err) {
-            vscode.window.showErrorMessage(`Error writing to input.txt: ${err.message}`);
-        }
-		console.log(example_testCases);
+		let content = await getQuestionData(question_name, 'content', vscode);
+		if(content == null) return;
+		await process_testCases(content, dir_path, vscode);
 		
 		await run_file(filePath, language);
 
 	});
-
 	await context.subscriptions.push(run_testCases);
+	await context.subscriptions.push(gui)
 	await context.subscriptions.push(disposable);
 	
 }
