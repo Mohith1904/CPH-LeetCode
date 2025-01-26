@@ -1,41 +1,51 @@
-# cph-leetcode README
+# CPH-LeetCode README
 
-This extension can be used to get Graphical User Interface for managing test cases and can be used as a text editor for LeetCode problems. With this extension you can fetch, add, delete, run and check the output directly from the User Interface.
+This extension provides a Graphical User Interface (GUI) for managing test cases and serves as a text editor for LeetCode problems. With this extension, you can fetch, add, delete, run, and check the output directly from the user interface.
+
+---
 
 ## Features
 
-The main features of this extension include:-  
-**Fetch TestCases:-** You can seamlessly fetch testcases of a problem using it's URL. In the Graphical User Interface, you can see the Input, Output and the actual output of your code.  
-**Add TestCases:-** You can add your own custom testcases with a single click for a problem to see if your solution works fine.  
-**Run TestCases:-** You can execute each testcase and display results in real time.  
-**Delete TestCases:-** Easily remove testcases with a using the delete option for only custom testcases.  
+### **Main features of this extension include:**
+
+- **Fetch Test Cases:**  
+  Seamlessly fetch test cases for a problem using its URL. The GUI displays the input, output, and actual output of your code.
+
+- **Add Test Cases:**  
+  Add custom test cases with a single click to validate your solution.
+
+- **Run Test Cases:**  
+  Execute each test case and display the results in real-time.
+
+- **Delete Test Cases:**  
+  Easily remove test cases using the delete option (available for custom test cases only).
+
+---
 
 ## Running the Extension
 
-### 1. Clone the Repository 
+### **1. Clone the Repository**
 Run the following command to clone the repository:
 
-bash
+```bash
 git clone https://github.com/Mohith1904/CPH-LeetCode
-
+```
 ### 2. Requirements
 
 1. Install *Node.js* (includes npm) from [Node.js official site](https://nodejs.org/).
 2. Run the following command to install the required dependencies:
-  bash
+  ```bash
     npm install
-  
-  bash
     npm install node-fetch cheerio
-     
+   ```  
 3. Optional: Install the VS Code Extension Development Kit:
-  bash
+  ```bash
    npm install -g yo generator-code
-    
+   ``` 
 ### 3. Navigate to extension.js
    F5 to start debugging
 
-Click `Ctrl+Shift+P` to open the command pallete and run the command **GUI LC CPH", from there you can access the GUI that will be opened in the side window.   
+Click `Ctrl+Shift+P` to open the command pallete and run the command **GUI LC CPH**, from there you can access the GUI that will be opened in the side window.   
 The GUI will run code of the file that was active while running the command. If you want to run code for another file, please close the GUI and run the command mentioned again with active text editor being the file you want to run.  
 
 
